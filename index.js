@@ -11,6 +11,75 @@ class Node{
     static tail;
     static head;
 }
+var bodyHeight = document.body.offsetHeight;
+var bodyWidth = document.body.offsetWidth;
+console.log(bodyHeight + "x"+bodyWidth);
+var playground;
+
+function makeGridPC(het,wet,size){
+    var ht = Math.trunc(het/size);
+    var wt = Math.trunc(wet/size);
+    playground= new Array(ht);
+    for(var i = 0; i<playground.length; i++){
+        playground[i]=new Array(wt);
+    }
+    document.body.innerHTML+="<table id =\"tb\"></tb>";
+    for(var i = 0; i<ht; i++){
+        document.getElementById("tb").innerHTML+="<tr id=\""+i+"\" name= \"row\" style=\"height:"+size+"px\"></tr>"
+        for(var j = 0; j<wt; j++){
+            document.getElementById(i).innerHTML+="<th id=\""+getNum(i,j)+"\" name= \"col\" style=\"width:"+size+"px\"></th>"
+        }
+    }
+    var x = document.getElementById("0000");
+    x.style.color="white";
+    x.style.fontFamily="sans-serif";
+    x.style.fontSize=size;
+}
+function makeButtons(){
+    document.body.innerHTML+="<table id=\"btns\"></table>";
+    for(var i = 0; i<3; i++){
+        document.getElementById("btns").innerHTML+="<tr id=\"btRow"+i+"\" style =\"height:37.79px;\">";
+        for(var j = 0; j<3; j++){
+            document.getElementById("btRow"+i).innerHTML+="<th id=\"bt"+i+""+j+"\" style =\"width:37.79px;\"></th>";
+        }
+    }
+    var temp ="burlywood";
+    async function changeToNormal(button){
+        await sleep(90);
+        document.getElementById(button).style.backgroundColor="transparent";
+    }
+    document.getElementById("bt01").addEventListener("click", function (){
+        document.getElementById("bt01").style.backgroundColor=temp;
+        pressKey('w');        
+        changeToNormal("bt01");
+    });
+    document.getElementById("bt10").addEventListener("click", function (){
+        document.getElementById("bt10").style.backgroundColor=temp;
+        pressKey('a');
+        changeToNormal("bt10");
+    });
+    document.getElementById("bt12").addEventListener("click", function (){
+        document.getElementById("bt12").style.backgroundColor=temp;
+        pressKey('d');
+        changeToNormal("bt12");
+    });
+    document.getElementById("bt21").addEventListener("click", function (){
+        document.getElementById("bt21").style.backgroundColor=temp;
+        pressKey('s');
+        changeToNormal("bt21");
+    });
+}
+function makeGridMob(){
+    console.log("i ran");
+    makeGridPC(bodyHeight-114, bodyWidth,10);
+    makeButtons();
+    document.getElementById("btns").style.marginLeft=bodyWidth/2-56.685; 
+    document.getElementById("btns").style.marginTop=5;
+}
+if(bodyWidth<=484)
+makeGridMob();
+else
+makeGridPC(bodyHeight,bodyWidth,30);
 
 var currScore = 5;
 var speed;
@@ -22,10 +91,6 @@ if(diff==="easy" || diff==="e"){
     speed = 200;
 }else{
     speed = 100;
-}
-var playground= new Array(29);
-for(var i = 0; i<playground.length; i++){
-    playground[i]=new Array(42);
 }
 function generateSaanp(){
     var tl = new Node(1,1);
@@ -50,6 +115,10 @@ document.addEventListener('keypress', (event)=>{
     if(isValidKey(event.key))
         currKey = event.key;
 });
+function pressKey(k){
+    if(isValidKey(k))
+        currKey = k;
+}
 
 //food:
 var currFood = generateFood();
@@ -198,7 +267,7 @@ for(var j =0; j<playground[0].length;j++){
 }
 for(var i = 0; i<playground.length; i++){
     document.getElementById(getNum(i,0)).style.backgroundColor="black";
-    document.getElementById(getNum(i,41)).style.backgroundColor="black";
+    document.getElementById(getNum(i,playground[0].length-1)).style.backgroundColor="black";
     
 }
 function prtPlaygrdf(){
@@ -212,10 +281,8 @@ function prtPlaygrdf(){
     }
 }
  function generateFood(){
-    var mult = (playground.length-2) * (playground[0].length-2);
-    var rand = Math.trunc(Math.random()*mult+1);
-    var row = Math.trunc((rand-1)/(playground[0].length-2))+1;
-    var col = (rand-1)%(playground.length-2)+1;
+    var row = Math.trunc(Math.random()*(playground.length-2))+1;
+    var col = Math.trunc(Math.random()*(playground[0].length-2))+1;
     if(ifSafeFood(row, col)){
         let food = new Node(row, col);
         console.log(row+" " + col);
