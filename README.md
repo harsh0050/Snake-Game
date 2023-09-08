@@ -1,2 +1,2 @@
 # SaanpEkPremKatha
-made by none other than my highness
+A treditional snake game using HTML, CSS and Javascript.
